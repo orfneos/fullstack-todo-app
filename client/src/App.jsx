@@ -2,45 +2,63 @@ import { useState, useEffect } from "react";
 import TaskItem from "./components/TaskItem";
 import AddTaskForm from "./components/AddTaskForm";
 
-const initialTasks = [
-  { id: 1, text: "Gym", completed: false },
-  { id: 2, text: "Read", completed: true },
-  { id: 3, text: "Study React", completed: false }
-]
+
 
 function App() {
-  const [task, setTask] = useState(() => {
-    const savedTasks = localStorage.getItem('my_tasks')
-    if(savedTasks !== null) {
-      return JSON.parse(savedTasks)
-    }
-    return initialTasks
-  })
+  const [task, setTask] = useState([])
+
 
 useEffect(() => {
-  localStorage.setItem('my_tasks', JSON.stringify(task))
-}, [task])
+  fetch('http://localhost:3000/api/tasks')
+    .then(res => res.json())
+    .then(data => setTask(data))
+}, [])
   
 
-function addTask(text) {
+async function addTask(text) {
   if(text.trim() === ('')) {
     return
   }
-  setTask([...task, {id: Date.now(), text: text, completed: false}])
+  try{
+  const res = await fetch('http://localhost:3000/api/tasks', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({ id: Date.now(), text: text, completed: false})
+  })
+  const data = await res.json()
+  console.log(data)
+  setTask([...task, data])
+  } catch(error) {
+    console.log('Error:', error)
+  }
 }
 
-function toggleTask(id) {
-  setTask(task.map((t) => {
-    if(t.id === id) {
-      return {...t, completed: !t.completed}
-    }
-    return t
-  }))
+async function toggleTask(id) {
+  try{
+    await fetch(`http://localhost:3000/api/tasks/${id}`, {
+      method: 'PUT'
+    })
+    setTask(task.map((t) => {
+      if(t.id === id) {
+        return {...t, completed: !t.completed}
+      }
+      return t
+    }))
+  } catch(error) {
+    console.log('Error:', error)
+  }
 }
 
-function deleteTask(id) {
-  setTask(task.filter((t) => t.id !== id))
-}
+async function deleteTask(id) {
+  try{
+    await fetch(`http://localhost:3000/api/tasks/${id}`, {
+    method: 'DELETE',
+  })
+    setTask(task.filter((t) => t.id !== id))
+  } catch(error) {
+    console.log('Error:', error)
+  }
+} 
 
   return(
     <>
