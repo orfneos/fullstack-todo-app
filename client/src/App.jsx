@@ -25,25 +25,32 @@ async function addTask(text) {
     headers: {'Content-Type': 'application/json'},
     body: JSON.stringify({ id: Date.now(), text: text, completed: false})
   })
-  const data = await res.json()
-  console.log(data)
-  setTask([...task, data])
+  if(res.ok) {
+    const data = await res.json()
+    setTask([...task, data])
+  } else {
+    console.error('Server error during add')
+    }
   } catch(error) {
-    console.log('Error:', error)
+    console.log('Network Error:', error)
   }
 }
 
 async function toggleTask(id) {
   try{
-    await fetch(`http://localhost:3000/api/tasks/${id}`, {
+    const res = await fetch(`http://localhost:3000/api/tasks/${id}`, {
       method: 'PUT'
     })
-    setTask(task.map((t) => {
-      if(t.id === id) {
-        return {...t, completed: !t.completed}
-      }
-      return t
-    }))
+    if(res.ok) {
+      setTask(task.map((t) => {
+        if(t.id === id) {
+          return {...t, completed: !t.completed}
+        }
+        return t
+      }))
+    } else {
+      console.error('Server error during toggle')
+    }
   } catch(error) {
     console.log('Error:', error)
   }
@@ -51,10 +58,14 @@ async function toggleTask(id) {
 
 async function deleteTask(id) {
   try{
-    await fetch(`http://localhost:3000/api/tasks/${id}`, {
+    const res = await fetch(`http://localhost:3000/api/tasks/${id}`, {
     method: 'DELETE',
   })
+  if(res.ok) {
     setTask(task.filter((t) => t.id !== id))
+  } else {
+    console.error('Server error during delete')
+    }
   } catch(error) {
     console.log('Error:', error)
   }
