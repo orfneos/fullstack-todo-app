@@ -23,7 +23,7 @@ async function addTask(text) {
   const res = await fetch('http://localhost:3000/api/tasks', {
     method: 'POST',
     headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify({ id: Date.now(), text: text, completed: false})
+    body: JSON.stringify({ text: text})
   })
   if(res.ok) {
     const data = await res.json()
@@ -43,7 +43,7 @@ async function toggleTask(id) {
     })
     if(res.ok) {
       setTask(task.map((t) => {
-        if(t.id === id) {
+        if(t._id === id) {
           return {...t, completed: !t.completed}
         }
         return t
@@ -62,7 +62,7 @@ async function deleteTask(id) {
     method: 'DELETE',
   })
   if(res.ok) {
-    setTask(task.filter((t) => t.id !== id))
+    setTask(task.filter((t) => t._id !== id))
   } else {
     console.error('Server error during delete')
     }
@@ -78,7 +78,7 @@ async function deleteTask(id) {
     <ul>
       {task.map((t) => (
       <TaskItem
-        key={t.id}
+        key={t._id}
         task={t}
         toggleTask={toggleTask}
         deleteTask={deleteTask}/>
