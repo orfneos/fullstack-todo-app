@@ -1,3 +1,5 @@
+require('dotenv').config()
+
 const dns = require('dns')
 dns.setServers(['8.8.8.8', '8.8.4.4'])
 
@@ -5,7 +7,7 @@ const express = require('express')
 const cors = require('cors')
 const app = express()
 const mongoose = require('mongoose')
-const dbURI = 'mongodb+srv://orfneos:12345@cluster0.fbilvls.mongodb.net/todoDB?retryWrites=true&w=majority';
+const dbURI = process.env.MONGODB_URI
 
 mongoose.connect(dbURI, { 
   serverSelectionTimeoutMS: 5000 
