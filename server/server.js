@@ -8,6 +8,7 @@ const cors = require('cors')
 const app = express()
 const mongoose = require('mongoose')
 const dbURI = process.env.MONGODB_URI
+const Task = require('./models/Task')
 
 mongoose.connect(dbURI, { 
   serverSelectionTimeoutMS: 5000 
@@ -15,13 +16,7 @@ mongoose.connect(dbURI, {
   .then(() => console.log('Connected to Cloud MongoDB!'))
   .catch(err => console.error('Cloud Connection Error:', err))
 
-const tasksSchema = new mongoose.Schema({
-  text: String,
-  completed: { type: Boolean, default: false}
-})
-
-const Task = mongoose.model('Task', tasksSchema)
-
+  
 app.use(express.json())
 app.use(cors())
 
