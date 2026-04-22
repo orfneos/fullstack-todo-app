@@ -5,13 +5,13 @@ import AddTaskForm from "./components/AddTaskForm";
 
 
 function App() {
-  const [task, setTask] = useState([])
+  const [tasks, setTasks] = useState([])
 
 
 useEffect(() => {
-  fetch('http://localhost:3000/api/tasks')
+  fetch(`${import.meta.env.VITE_API_URL}/api/tasks`)
     .then(res => res.json())
-    .then(data => setTask(data))
+    .then(data => setTasks(data))
 }, [])
   
 
@@ -20,14 +20,14 @@ async function addTask(text) {
     return
   }
   try{
-  const res = await fetch('http://localhost:3000/api/tasks', {
+  const res = await fetch(`${import.meta.env.VITE_API_URL}/api/tasks`, {
     method: 'POST',
     headers: {'Content-Type': 'application/json'},
     body: JSON.stringify({ text: text})
   })
   if(res.ok) {
     const data = await res.json()
-    setTask([...task, data])
+    setTasks(prev => [...prev, data])
   } else {
     console.error('Server error during add')
     }
@@ -38,16 +38,12 @@ async function addTask(text) {
 
 async function toggleTask(id) {
   try{
-    const res = await fetch(`http://localhost:3000/api/tasks/${id}`, {
+    const res = await fetch(`${import.meta.env.VITE_API_URL}/api/tasks/${id}`, {
       method: 'PUT'
     })
     if(res.ok) {
-      setTask(task.map((t) => {
-        if(t._id === id) {
-          return {...t, completed: !t.completed}
-        }
-        return t
-      }))
+      const updated = await res.json()
+      setTasks(prev => prev.map(t => t._id === id ? updated : t)) 
     } else {
       console.error('Server error during toggle')
     }
@@ -58,11 +54,11 @@ async function toggleTask(id) {
 
 async function deleteTask(id) {
   try{
-    const res = await fetch(`http://localhost:3000/api/tasks/${id}`, {
+    const res = await fetch(`${import.meta.env.VITE_API_URL}/api/tasks/${id}`, {
     method: 'DELETE',
   })
   if(res.ok) {
-    setTask(task.filter((t) => t._id !== id))
+    setTasks(prev => prev.filter((t) => t._id !== id))
   } else {
     console.error('Server error during delete')
     }
@@ -76,7 +72,7 @@ async function deleteTask(id) {
     <AddTaskForm
       addTask={addTask}/>
     <ul>
-      {task.map((t) => (
+      {tasks.map((t) => (
       <TaskItem
         key={t._id}
         task={t}

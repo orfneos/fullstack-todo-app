@@ -41,7 +41,7 @@ app.post('/api/tasks', async (req, res) => {
       text: req.body.text,
     })
     const savedTask = await newTask.save()
-    res.json(savedTask)
+    res.status(201).json(savedTask)
   } catch (error) {
     console.error('Error saving task:', error)
     res.status(500).json({message: 'Server error'})
@@ -51,7 +51,10 @@ app.post('/api/tasks', async (req, res) => {
 app.delete('/api/tasks/:id', async (req, res) =>{
   try{
     const id = req.params.id
-    await Task.findByIdAndDelete(id)
+    const deletedTask = await Task.findByIdAndDelete(id)
+    if(!deletedTask) {
+      return res.status(404).json({message: 'Task not found'})
+    }
     res.json({message: 'Task deleted successfully'})
   } catch (error) {
     console.error('Error deleting task:', error)
@@ -62,10 +65,13 @@ app.delete('/api/tasks/:id', async (req, res) =>{
 app.put('/api/tasks/:id', async (req, res) => {
   try{
     const id = req.params.id
-    const foundTask = await Task.findById(id)
-    foundTask.completed = !foundTask.completed
-    await foundTask.save()
-    res.json(foundTask)
+    const updatedTask = await Task.findById(id)
+    if(!updatedTask ) {
+      return res.status(404).json({message: 'Task not found'})
+    }
+    updatedTask.completed = !updatedTask.completed
+    await updatedTask.save()
+    res.json(updatedTask)
   } catch (error) {
     console.error('Error updating task:', error)
     res.status(500).json({message:'Server error'})
