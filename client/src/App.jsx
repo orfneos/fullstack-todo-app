@@ -68,20 +68,26 @@ async function deleteTask(id) {
 } 
 
   return(
-    <>
-    <AddTaskForm
-      addTask={addTask}/>
-    <ul>
-      {tasks.map((t) => (
-      <TaskItem
-        key={t._id}
-        task={t}
-        toggleTask={toggleTask}
-        deleteTask={deleteTask}/>
-      ))
-    }
-    </ul>
-    </>
+   <div className="min-h-screen bg-black flex justify-center p-8">
+    <div className="w-full max-w-xl bg-orange-400 rounded-2xl shadow-xl p-8 space-y-6">
+      <h1 className="text-3xl font-bold text-center text-black">
+        Todo App
+      </h1>
+
+        <AddTaskForm addTask={addTask}/>
+
+        <ul>
+          {tasks.map((t) => (
+          <TaskItem
+            key={t._id}
+            task={t}
+            toggleTask={toggleTask}
+            deleteTask={deleteTask}
+            />
+          ))}
+        </ul>
+    </div>
+   </div>
   )
 }
 
