@@ -8,14 +8,14 @@ A fullstack Todo application where users can add, complete, and delete tasks. Da
 **Backend:** Node.js, Express  
 **Database:** MongoDB Atlas
 
-## ✨ Key Features
+##  Key Features
 
 - Full CRUD Operations
 - Loading & Error states
 - Persistent data with MongoDB Atlas
 - Secure credentials with `.env`
 
-## 💡 Problem Solving
+##  Problem Solving
 
 During development, encountered a **DNS Resolution** issue connecting to MongoDB Atlas (ISP restriction).  
 **Solution:** Used Node.js `dns` module to manually set Google DNS servers (`8.8.8.8`).
