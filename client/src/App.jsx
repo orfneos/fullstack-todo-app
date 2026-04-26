@@ -6,12 +6,26 @@ import AddTaskForm from "./components/AddTaskForm";
 
 function App() {
   const [tasks, setTasks] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
 
 
 useEffect(() => {
   fetch(`${import.meta.env.VITE_API_URL}/api/tasks`)
-    .then(res => res.json())
-    .then(data => setTasks(data))
+    .then((res) => {
+      if (!res.ok) {
+        throw new Error('Failed to fetch tasks')
+      }
+      return res.json()
+    })
+    .then((data) => {
+      setTasks(data)
+      setLoading(false)
+    })
+    .catch(() => {
+      setError('Could not load tasks.')
+      setLoading(false)
+    })
 }, [])
   
 
@@ -74,7 +88,12 @@ async function deleteTask(id) {
         Todo App
       </h1>
 
-        <AddTaskForm addTask={addTask}/>
+        {loading && (<p className="text-center text-blue-500 font-medium">Loading tasks...</p>)}
+        {error && (<p className="text-center text-red-500 bg-red-100 p-2 rounded-md mb-4 border border-red-200">{error}</p>)}
+
+        <div className="mb-6">
+          <AddTaskForm addTask={addTask}/>
+        </div>
 
         <ul className="space-y-3">
           {tasks.map((t) => (
