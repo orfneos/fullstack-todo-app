@@ -76,7 +76,7 @@ async function deleteTask(id) {
 
         <AddTaskForm addTask={addTask}/>
 
-        <ul>
+        <ul className="space-y-3">
           {tasks.map((t) => (
           <TaskItem
             key={t._id}
