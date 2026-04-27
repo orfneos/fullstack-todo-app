@@ -12,7 +12,7 @@ function handleSubmit() {
 
   return(
     <>
-    <div className="flex gap-4">
+    <div className="flex flex-col sm:flex-row gap-3">
       <input 
         value={newTask} 
         onChange={(e) => setNewTask(e.target.value)}
@@ -22,7 +22,7 @@ function handleSubmit() {
 
         <button 
         onClick={handleSubmit}
-        className="px-6 py-3 rounded-xl bg-black text-orange-400 font-semibold hover:opacity-80 transition shadow-xl"
+        className="px-6 py-3 rounded-xl bg-black text-orange-400 font-semibold hover:opacity-80 transition shadow-xl w-full sm:w-auto"
         >Add</button>
     </div>
     </>
